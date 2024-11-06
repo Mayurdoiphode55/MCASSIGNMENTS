@@ -1,0 +1,41 @@
+#include <p18f4550.h>  // Include Controller specific .h
+ void myMsDelay (unsigned int time)  // Definition of delay subroutine 
+{ 
+    unsigned int i, j; 
+    for (i = 0; i < time; i++)      // Loop for itime 
+        for (j = 0; j < 710; j++);  // Calibrated for a 1 ms delay in MPLAB 
+} 
+void main() 
+{  
+    TRISCbits.TRISC2 = 0;  // CCP1 pin (PWM output) as output
+    TRISD = 0;              // Configure PORTD (RD5 and RD6 for direction control) 
+as output
+    PR2 = 0xBA;             // Set PR2 value for 4 kHz PWM frequency (calculated 
+based on the system clock)
+    CCP1CON = 0x0C;         // Configure CCP1 for PWM mode
+    T2CON = 0x07;           // Configure Timer2 (prescaler 1:16, internal clock)
+    // Initial motor direction (clockwise)
+    PORTDbits.RD5 = 1;      // RD5 high for clockwise direction
+    PORTDbits.RD6 = 0;      // RD6 low for clockwise direction
+    while(1)  // Endless Loop
+    { 
+        // Set Duty Cycle to 50% (for 4 kHz frequency, 50% duty cycle corresponds 
+to CCPR1L = 0x80)
+        CCPR1L = 0x80;      // Set 50% duty cycle (0x80 is 50% of 0xFF)
+        // Enable PWM
+        T2CONbits.TMR2ON = 1;  // Start Timer2 for PWM generation
+        myMsDelay(2000);   // Wait for 2 seconds (adjust delay as needed)
+        // Change direction to anticlockwise (RD5 low, RD6 high)
+        PORTDbits.RD5 = 0;   // RD5 low for anticlockwise direction
+        PORTDbits.RD6 = 1;   // RD6 high for anticlockwise direction
+        myMsDelay(2000);   // Wait for 2 seconds
+        // Change direction to clockwise (RD5 high, RD6 low)
+        PORTDbits.RD5 = 1;   // RD5 high for clockwise direction
+        PORTDbits.RD6 = 0;   // RD6 low for clockwise direction
+        myMsDelay(2000);   // Wait for 2 seconds
+        // You can modify the duty cycle and test different speeds here
+        // Example: Set Duty Cycle to 80% (0xC0 for 80% duty cycle)
+        CCPR1L = 0xC0;      // Set 80% duty cycle
+        myMsDelay(2000);   // Wait for 2 seconds
+    }    
+}

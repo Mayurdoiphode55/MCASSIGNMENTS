@@ -1,0 +1,36 @@
+ORG 00H               ; Set the starting address of the program to 00H
+ ; 16-Bit Subtraction
+ ; First 16-bit number: 1234H (MSB: 12H, LSB: 34H)
+ ; Second 16-bit number: 5678H (MSB: 56H, LSB: 78H)
+ ORG 00H            ; Set the starting address of the program to 00H
+ ; First 16-bit number: 1234H (MSB: 12H, LSB: 34H)
+ ; Second 16-bit number: 5678H (MSB: 56H, LSB: 78H)
+ MOV A, #34H        ; Load the LSB of the first 16-bit number (34H) into the 
+accumulator
+ MOV R0, #78H       ; Load the LSB of the second 16-bit number (78H) into 
+register R0
+ ADD A, R0          ; Add the contents of R0 (78H) to A (34H), storing the result 
+in A
+ MOV 50H, A         ; Store the result's LSB in RAM location 50H
+ MOV A, #12H        ; Load the MSB of the first 16-bit number (12H) into the 
+accumulator
+ MOV R1, #56H       ; Load the MSB of the second 16-bit number (56H) into 
+register R1
+ ADDC A, R1         ; Add the contents of R1 (56H) to A (12H) along with carry 
+from previous addition
+ MOV 51H, A         ; Store the result's MSB in RAM location 51H
+ END                ; End of the program
+ MOV A, #34H           ; Load the LSB of the first 16-bit number into the 
+accumulator
+ MOV R0, #78H          ; Load the LSB of the second 16-bit number into register 
+R0
+ CLR C                 ; Clear the carry to prepare for subtraction
+ SUBB A, R0            ; Subtract R0 from A with borrow (A = 34H - 78H - carry)
+ MOV 50H, A            ; Store the result's LSB in RAM location 50H
+ MOV A, #12H           ; Load the MSB of the first 16-bit number into the 
+accumulator
+ MOV R1, #56H          ; Load the MSB of the second 16-bit number into register 
+R1
+ SUBB A, R1            ; Subtract R1 from A with borrow from previous operation
+ MOV 51H, A            ; Store the result's MSB in RAM location 51H
+ END                   ; End of the program
